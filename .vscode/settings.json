@@ -1,0 +1,4 @@
+{
+    "python.defaultInterpreterPath": "C:\\Program Files\\IronPython 2.7\\ipy.exe",
+    "python.languageServer": "Pylance"
+}

@@ -1,0 +1,2 @@
+lockpicks = 0x14fc
+smithHammer = 0x13e3
