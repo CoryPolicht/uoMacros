@@ -5,7 +5,17 @@ from ClassicAssist.Data.Macros.Commands.GumpCommands import *
 from ClassicAssist.Data.Macros.Commands.ObjectCommands import *
 from ClassicAssist.Data.Macros.Commands.MainCommands import *
 
+noMetal = "you do not have sufficient metal to make that"
+exceptional = "you create an exceptional quality item"
+created = "you create the item"
+
 blacksmithGump = 0x38920abd	
+
+craftRespones = {
+	1: created,
+	2: exceptional,
+	3: noMetal
+}
 
 blacksmithCategoryGumpSelectionMap = {
 	"ringmail": 1,
@@ -96,8 +106,9 @@ def useTool():
 	WaitForGump(blacksmithGump, 5000)
 
 def getCraftResults():
-	Pause(2000)
-	return gumpNavigation.getElementTextByXY(blacksmithGump, 170, 295)
+	for key, value in craftRespones.items():
+		if InGump(blacksmithGump, value):
+			return key
 
 def createLastItem():
 	useTool()

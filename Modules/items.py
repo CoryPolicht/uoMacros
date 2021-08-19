@@ -17,10 +17,3 @@ def FindItemsByName(name, container):
 			items.append(item.Serial)	
 	
 	return items
-
-def hasProperty(itemId, itemProperty):
-    result = False
-    item = Engine.Items.GetItem(itemId)
-    if itemProperty in item.Properties:
-        result = True
-    return result
