@@ -54,12 +54,28 @@ bashingMap = {
 	"scepter": 23,
 	"war mace": 30
 }
+
+chainmailMap = {
+	"chainmail coif": 2,
+	"chainmail leggings": 9,
+	"chainmail tunic": 16
+}
+
+helmetMap = {
+	"bascinet": 2,
+	"close helmet": 9,
+	"helmet": 16,
+	"norse helm": 23,
+	"plate helm": 30 
+}
 	
 blacksmithItemTypeMap = {
 	"polearms": poleArmsMap,
 	"shield": shieldMap,
 	"bladed": bladeMap,
-	"bashing": bashingMap
+	"bashing": bashingMap,
+	"chainmail": chainmailMap,
+	"helmet": helmetMap
 }
 
 def getCategory(item):
@@ -102,8 +118,9 @@ def setMetalType(metalType):
 	blacksmithGumpResponse(metalResponse)
 
 def useTool():
-	UseType(0x13e3)
+	UseType(types.smithHammer)
 	WaitForGump(blacksmithGump, 5000)
+	Pause(1000)
 
 def getCraftResults():
 	for key, value in craftRespones.items():
@@ -119,6 +136,7 @@ def createItem(item, metalType):
 	categoryResponse = blacksmithCategoryGumpSelectionMap.get(category)
 	useTool()
 	setMetalType(metalType)
+	blacksmithGumpResponse(categoryResponse)
 	itemList = blacksmithItemTypeMap.get(category)
 	itemResponse = itemList.get(item)
 	blacksmithGumpResponse(itemResponse)
