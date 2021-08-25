@@ -1,0 +1,1133 @@
+{
+  "Name": "settings.json",
+  "General": {
+    "AlwaysOnTop": true,
+    "LightLevel": 0,
+    "ActionDelay": true,
+    "ActionDelayMS": 500,
+    "Debug": false,
+    "SysTray": false,
+    "Filters": [
+      {
+        "Name": "ClassicAssist.Data.Filters.WeatherFilter",
+        "Enabled": true
+      },
+      {
+        "Name": "ClassicAssist.Data.Filters.SeasonFilter",
+        "Enabled": false
+      },
+      {
+        "Name": "ClassicAssist.Data.Filters.LightLevelFilter",
+        "Enabled": true
+      },
+      {
+        "Name": "ClassicAssist.Data.Filters.RepeatedMessagesFilter",
+        "Enabled": false,
+        "Options": {
+          "SendToJournal": false,
+          "MessageLimit": 5,
+          "TimeLimit": 5,
+          "BlockedTime": 5
+        }
+      },
+      {
+        "Name": "ClassicAssist.Data.Filters.ClilocFilter",
+        "Enabled": false,
+        "Options": {
+          "Filters": []
+        }
+      },
+      {
+        "Name": "ClassicAssist.Data.Filters.SoundFilter",
+        "Enabled": false,
+        "Options": {
+          "Items": []
+        }
+      }
+    ]
+  },
+  "Options": {
+    "UseOnce": {
+      "Persist": false
+    },
+    "UseDeathScreenWhilstHidden": false,
+    "CommandPrefix": 61,
+    "RangeCheckLastTarget": false,
+    "RangeCheckLastTargetAmount": 11,
+    "UseExperimentalFizzleDetection": false,
+    "UseObjectQueue": false,
+    "UseObjectQueueAmount": 5,
+    "QueueLastTarget": false,
+    "MaxTargetQueueLength": 1,
+    "SmartTargetOption": "None",
+    "LimitMouseWheelTrigger": true,
+    "LimitMouseWheelTriggerMS": 200,
+    "AutoAcceptPartyInvite": false,
+    "AutoAcceptPartyOnlyFromFriends": false,
+    "PreventTargetingInnocentsInGuardzone": false,
+    "PreventAttackingInnocentsInGuardzone": false,
+    "LastTargetMessage": "[Last Target]",
+    "FriendTargetMessage": "[Friend]",
+    "EnemyTargetMessage": "[Enemy]",
+    "DefaultMacroQuietMode": true,
+    "GetFriendEnemyUsesIgnoreList": false,
+    "AbilitiesGump": true,
+    "AbilitiesGumpX": 47,
+    "AbilitiesGumpY": 778,
+    "SetUOTitle": true,
+    "ShowProfileNameWindowTitle": false,
+    "SortMacrosAlphabetical": true,
+    "ShowResurrectionWaypoints": true,
+    "RehueFriends": false,
+    "RehueFriendsHue": 35,
+    "CheckHandsPotions": false,
+    "MacrosGump": true,
+    "MacrosGumpX": 1727,
+    "MacrosGumpY": 778,
+    "ChatWindowWidth": 650.0,
+    "ChatWindowHeight": 350.0,
+    "EntityCollectionViewerOptions": {
+      "AlwaysOnTop": true,
+      "ShowChildItems": false
+    },
+    "ExpireTargetsMS": -1
+  },
+  "Hotkeys": {
+    "Commands": [],
+    "Spells": [],
+    "Masteries": []
+  },
+  "Macros": {
+    "LeftColumnWidth": 200.0,
+    "Groups": [
+      {
+        "Name": "Combat"
+      },
+      {
+        "Name": "Crafting"
+      },
+      {
+        "Name": "Skill Training"
+      }
+    ],
+    "Macros": [
+      {
+        "Name": "All Attack",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "Msg(\"All Attack\")\r\nWaitForTarget(1000)\r\nTarget(\"enemy\")",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": "Combat",
+        "Aliases": []
+      },
+      {
+        "Name": "AutoBandage",
+        "Loop": true,
+        "DoNotAutoInterrupt": false,
+        "Macro": "if DiffHitsPercent(\"self\") > 25 or Poisoned(\"self\"):\r\n\tBandageSelf()\r\n\tPause(6000)\r\nelse:\r\n\tPause(2000)",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": true,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": "Combat",
+        "Aliases": []
+      },
+      {
+        "Name": "Blacksmith bullk order",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "from Assistant import Engine\r\nimport common\r\nimport blacksmith\r\nimport bulkOrder\r\nimport items\r\n\r\n\r\ncommon.checkOrMakeAlias(\"salvage bag\")\r\ncommon.checkOrMakeAlias(\"complete bag\")\r\n# backpack is a default alias\r\nbackpackId = GetAlias(\"backpack\")\r\n\r\n# instatiate objects\r\nbulkOrderGumpId = 0x5afbd742\r\nbulkOrderDict = {\"combine\": 2}\r\ncraft = BlacksmithCrafting()\r\nbulkOrderNav = GumpNavigation(bulkOrderGumpId, bulkOrderDict)\r\n\r\n# define helper methods\r\ndef getItemToCreate():\r\n\treturn bulkOrderNav.getElementTextByXY(75, 96)\r\n\t\r\ndef getAmountToMake():\r\n\tresult = bulkOrderNav.getElementTextByXY(275, 48)\r\n\treturn int(result)\r\n\r\ndef getAmountCompleted():\r\n\tresult = bulkOrderNav.getElementTextByXY(275, 96)\r\n\treturn int(result)\r\n\r\ndef getAmountToFill():\r\n\treturn getAmountToMake() - getAmountCompleted()\r\n\r\ndef fillBod(itemId):\r\n\tbulkOrderNav.navigateGump(\"combine\")\r\n\tWaitForTarget(5000)\r\n\tTarget(itemId)\r\n\r\ndef checkItemsAndFill(itemsInBag):\r\n\tfor currentItem in itemsInBag:\r\n\t\tif requiresExceptional:\r\n\t\t\tif Property(currentItem, \"exceptional\"):\r\n\t\t\t\tfillBod(currentItem)\r\n\t\t\telse:\r\n\t\t\t\tMoveItem(currentItem, \"salvage bag\")\r\n\t\telse:\r\n\t\t\tfillBod(currentItem)\r\n\r\n# orchestrate \r\nUseType(0x2258)\r\nWaitForGump(bulkOrderGumpId, 5000)\r\nrequiresExceptional = bulkOrderNav.checkInGump(\"exceptional\")\r\nmetalType = getMetalTypeBulkOrder()\r\nitem = getItemToCreate()\r\n#do this outside of the loop so I can just use create last item\r\nblacksmith.createItem(item, metalType)\r\namountToDo = getAmountToFill()\r\nhaveMetal = True \r\n\r\nwhile amountToDo > 0 and haveMetal:\r\n\tblacksmith.createLastItem()\r\n\tPause(2000)\r\n\titemsInBag = items.FindItemsByName(item, backpackId)\r\n\tcheckItemsAndFill(itemsInBag)\r\n\tPause(1000)\r\n\thaveMetal = blacksmith.getCraftResults() != 3\r\n\tamountToDo = getAmountToFill()\r\n\r\nMoveType(0x2258, \"backpack\", \"complete bag\")\r\n",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": "Crafting",
+        "Aliases": []
+      },
+      {
+        "Name": "Bushido",
+        "Loop": true,
+        "DoNotAutoInterrupt": false,
+        "Macro": "Cast(\"Evasion\")\r\nPause(10000)",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": "Skill Training",
+        "Aliases": []
+      },
+      {
+        "Name": "CastHealing",
+        "Loop": true,
+        "DoNotAutoInterrupt": false,
+        "Macro": "if DiffHitsPercent(\"self\") > 50 and not Poisoned(\"self\"):\r\n\tCast(\"Greater Heal\", \"self\")\r\n\tPause(2000)\r\nelse:\r\n\tPause(2000)\r\nif Poisoned(\"self\"):\r\n\tCast(\"Cure\", \"self\")\r\n\tPause(1500)\r\n\r\n",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": true,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": "Combat",
+        "Aliases": []
+      },
+      {
+        "Name": "CastSpells",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": null,
+        "Aliases": []
+      },
+      {
+        "Name": "Discord Enemy",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "UseSkill(\"Discordance\")\r\nWaitForTarget(5000)\r\nTarget(\"enemy\")",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 62,
+          "SDLModifier": 1,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": "Combat",
+        "Aliases": []
+      },
+      {
+        "Name": "Follow me",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "Msg(\"all follow me\")",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": "Combat",
+        "Aliases": []
+      },
+      {
+        "Name": "Get BOD's",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "from common import *\r\n\r\ndef useHomeBook(response):\r\n\tuseObjectAndGumpResponse(0x460b6cb7, 0x554b87f3, response)\r\n\tPause(10000)\r\n\r\ndef getBOD(contextMenu, contextResponse, gump, gumpResponse):\r\n\tWaitForContext(contextMenu, contextResponse, 5000)\r\n\tWaitForGump(gump, 5000)\r\n\tReplyGump(gump, gumpResponse)\r\n\r\ndef getTailorBOD():\r\n\tuseHomeBook(23)\r\n\tgetBOD(0x184299, 3, 0x9bade6ea, 1)\r\n\r\ndef getBlacksmithBOD():\r\n\tuseHomeBook(5)\r\n\tgetBOD(0x18428b, 3, 0xbe0dad1e, 1)\r\n\t\r\ndef getMonsterBOD():\r\n\tuseHomeBook(11)\r\n\tgetBOD(0x187022, 1, 0x58082cb3, 0)\r\n\r\ndef getTinkerBOD():\r\n\tuseHomeBook(17)\r\n\tgetBOD(0x1842b3, 3, 0xd6bcf63a, 1)\r\n\r\ndef getCarpenterBOD():\r\n\tuseHomeBook(29)\r\n\tgetBOD(0x1842aa, 3, 0x9bade6ea, 1)\r\n\r\ndef getFletcherBOD():\r\n\tuseHomeBook(35)\r\n\tgetBOD(0x1842a3, 3, 0x9bade6ea, 1)\r\n\r\ndef getTamingBOD():\r\n\tuseHomeBook(41)\r\n\tgetBOD(0x18634e, 4, 0x307b71a8, 1)\r\n\t\r\ndef Main():\r\n\tgetTailorBOD()\r\n\tgetBlacksmithBOD()\r\n\tgetMonsterBOD()\r\n\tgetTinkerBOD()\r\n\tgetCarpenterBOD()\r\n\tgetFletcherBOD()\r\n\tgetTamingBOD()\r\n\t\r\nMain()",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": "Crafting",
+        "Aliases": []
+      },
+      {
+        "Name": "GoHome",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "homeBook = GetAlias(\"home book\")\r\nCast(\"Recall\", homeBook)\r\n",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": null,
+        "Aliases": []
+      },
+      {
+        "Name": "Keep me buff",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "#initial setup\r\n\r\ndef CheckTimer(name, amount):\r\n\ttime = amount * 1000\r\n\tif not TimerExists(name):\r\n\t\tCreateTimer(name)\r\n\t\treturn True\r\n\treturn Timer(name) > time\r\n\r\nMsg(\"OVER 9000!\")\r\n#set weapon timers\r\nif CheckTimer(\"consecrate\", 15):\r\n\tCast(\"Consecrate Weapon\")\r\n\tSetTimer(\"consecrate\", 0)\r\n\tPause(1000)\r\n\r\nif CheckTimer(\"curse\", 15):\r\n\tCast(\"Curse Weapon\")\r\n\tSetTimer(\"curse\", 0)\r\n\tPause(1000)\r\n\r\nif not BuffExists(\"Divine Fury\"):\r\n\tCast(\"Divine Fury\")\r\n\tPause(1000)\r\n\r\nif not BuffExists(\"Bless\"):\r\n\tCast(\"Bless\", \"self\")\r\n\tPause(1000)\r\n\t\r\nif CheckTimer(\"Gift Of Life\", 60000):\r\n\tCast(\"Gift Of Life\", \"Self\")\r\n\tPause(1000)\r\n\tSetTimer(\"Gift Of Life\")",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": true,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": null,
+        "Aliases": []
+      },
+      {
+        "Name": "LoginStartStuff",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "#options = ['do','something']\r\n\r\n#res, index = SelectionPrompt(options)\r\nif not FindAlias(\"home book\"):\r\n\tPromptAlias(\"home Book\")\r\n",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": null,
+        "Aliases": []
+      },
+      {
+        "Name": "Macro-23",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "UseObject(0x425129de)\r\n",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": null,
+        "Aliases": []
+      },
+      {
+        "Name": "MainAttack",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "# get nearest enemy\r\nGetEnemy(['murderer','criminal','gray'], 'any', 'closest')\r\n\r\n# keeps you moving towards the enemy till you are in melee range\r\ndef StayInMeleeRange():\r\n\twhile Distance('enemy') > 2:\r\n\t\tRun(DirectionTo('enemy'))\r\nAttack(\"enemy\")\r\nSetAbility(\"secondary\")\r\n# do things\r\n#Cast(\"Wither\")\r\n#Pause(1500)\r\n",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 44,
+          "SDLModifier": 1,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": "Combat",
+        "Aliases": []
+      },
+      {
+        "Name": "Orchestrate Bod",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "import common\r\nimport gumpNavigation\r\n\r\n\r\n",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": "Crafting",
+        "Aliases": []
+      },
+      {
+        "Name": "Pet Healing",
+        "Loop": true,
+        "DoNotAutoInterrupt": false,
+        "Macro": "\r\npetIdList = [0x14fa67, 0x14f94c, 0x93419, 0x830a5]\r\n\r\ndef healPet(petId):\r\n\tif DiffHitsPercent(petId) > 5:\r\n\t\tUseType(0xe21)\r\n\t\tWaitForTarget(1000)\r\n\t\tTarget(petId)\r\n\t\tPause(3000)\r\n\r\nfor pet in petIdList:\r\n\thealPet(pet)\r\n\r\nPause(1000)",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": true,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": "Combat",
+        "Aliases": []
+      },
+      {
+        "Name": "Provocation",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "UseSkill(\"Provocation\")\r\nWaitForTarget(5000)\r\nTarget(\"enemy\")",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": "Combat",
+        "Aliases": []
+      },
+      {
+        "Name": "Stealth",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "UseSkill(\"Hiding\")\r\nRun(DirectionTo('east'))",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": "Skill Training",
+        "Aliases": []
+      },
+      {
+        "Name": "Tailoring bulk order",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": "Crafting",
+        "Aliases": []
+      },
+      {
+        "Name": "TestLootSort",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "import re\r\nfrom Assistant import Engine\r\n\r\ndef Empty_TrashBag(myTrashBag  = None, emptyTrashBag = False, pauseInMS = 500):\r\n    if emptyTrashBag:\r\n        WaitForContext(myTrashBag, 0, 5000)\r\n        Pause(500)\r\n\r\n\r\ndef VerifyBagExist(containerToVerify, bagName):\r\n    containerExist = False    \r\n    if not FindObject(containerToVerify, -1, \"backpack\"): \r\n        SysMessage('Your container \"' + bagName + '\" does not exist!', 33)\r\n    else:\r\n        containerExist = True\r\n    return containerExist\r\n\r\n\r\ndef FindAnd_MoveItem(itemName = [], myLootBag = None, myKeepBag = None, myTrashBag  = None, plusNumberToSearch = None, searchPropertyString = [], bonusNumberToSearch = None, percentageNumberToSearch = None, pauseInMS = 500):  \r\n    if itemName == []: \r\n    \tSysMessage(\"Please define an item name string to search for. Example is ['ring', 'bracelet'].\", 33)\r\n    \treturn\r\n    \t\r\n    if not VerifyBagExist(myLootBag, \"Loot Bag\") or not VerifyBagExist(myKeepBag, \"Keep Bag\") or not VerifyBagExist(myTrashBag, \"Trash Bag\"):\r\n        return\r\n    \r\n    if\tplusNumberToSearch == None and searchPropertyString == [] and bonusNumberToSearch == None and percentageNumberToSearch == None:\r\n        SysMessage('Please define at least one search critera!', 33)\r\n        return\r\n           \r\n    containerToSearch = Engine.Items.GetItem(myLootBag)    \r\n    if containerToSearch.Container == None:\r\n        WaitForContents(searchContainer, 5000)\r\n\r\n    for itemFound in containerToSearch.Container.GetItems():\r\n        for i in itemName:        \r\n            if itemFound.Name.ToLower().Contains(i.ToLower()):\r\n                WaitForProperties(itemFound.Serial, 5000)\r\n                keepItem = False\r\n                if Property(itemFound.Serial, \"+\"): #If item propeties contain \"+\", search and see if stat number is equal to or greater than our plusNumberToSearch variable.           \r\n                    getItemProperties = itemFound.Properties                    \r\n                    for g in getItemProperties:\r\n                        if g.Text.Contains(\"+\") and int(re.sub(\"\\D\", \"\", str(g.Text))) >= plusNumberToSearch:\r\n                            keepItem = True\r\n                            break\r\n                           \r\n                if not keepItem and not searchPropertyString == []:  \r\n                    getItemProperties = itemFound.Properties\r\n                    keepItem = False\r\n                    for g in getItemProperties:\r\n                        for s in searchPropertyString:\r\n                            if g.Text.ToLower().Contains(s.ToLower()): #If the item contains the search string from the list searchPropertyString, set item keep true\r\n                                keepItem = True\r\n                                break\r\n                \r\n                if not keepItem and not bonusNumberToSearch == None: \r\n                    if Property(itemFound.Serial, \"bonus\"): #If item propeties contain \"bonus\" string, search and see if bonus number is equal to or greater than our bonusNumberToKeep variable.           \r\n                        getItemProperties = itemFound.Properties                    \r\n                        for g in getItemProperties:\r\n                            if g.Text.Contains(\"bonus\") and int(re.sub(\"\\D\", \"\", str(g.Text))) >= bonusNumberToSearch:\r\n                                keepItem = True\r\n                                break\r\n                if not keepItem and not percentageNumberToSearch == None: \r\n                   if Property(itemFound.Serial, \"%\"): #If item propeties contain \"%\" sign, search and see if the percentage number is equal to or greater than our percentageNumberToKeep variable.           \r\n                       getItemProperties = itemFound.Properties                    \r\n                       for g in getItemProperties:\r\n                           if g.Text.Contains(\"%\") and int(re.sub(\"\\D\", \"\", str(g.Text))) >= percentageNumberToSearch:\r\n                               keepItem = True\r\n                               break\r\n                            \r\n                if keepItem:        \r\n                    MoveItem(itemFound.Serial, myKeepBag)\r\n                    Pause(pauseInMS)\r\n                else:    \r\n                    MoveItem(itemFound.Serial, myTrashBag)\r\n                    Pause(pauseInMS)\r\n\r\n###Main program\r\n\r\n\r\n#Argument 1 itemName                : Default list set to empty. Item name list to search for, in this case it's ring and bracelet. Loot bag has to be setup properly for this code to work. Please go here if you need help setting up your loop back https://uoevo.com/wiki/Loot_Bag_Setup\r\n#Argument 2 myLootBag               : Default set to None. Serial ID of your loot bag, use Object Inspector to get this.\r\n#Argument 3 myKeepBag               : Default set to None. None. Serial ID of your keep bag, use Object Inspector to get this.\r\n#Argument 4 myTrashBag              : Default set to None. Serial ID of your trash bag, use Object Inspector to get this.\r\n#Argument 5 plusNumberToSearch      : Default set to None. search for property string with +number greater than or equal to what you defined. \r\n#Argument 6 searchPropertyString    : Default list set to empty. Search for properties for sepecific text that you want to keep. Example is if the item property has the string \"stage\", it will be moved you your keep bag.\r\n#Argument 7 bonusNumberToSearch     : Default set to None. Search for property string with bonus number greater than or equal to what you defined. \r\n#Argument 8 percentageNumberToSearch: Default set to None. search for property string with % number greater than or equal to what you defined. \r\n#Argument 9 pauseInMS               : Default is 500 ms, but set higher if you have bad internet connection of if the code is not moving/trashing your items. \r\n#FindAnd_MoveItem(itemName = ['bracelet', 'ring'], myLootBag = 0x41e0a0ec, myKeepBag = 0x42fed95a, myTrashBag = 0x41e0a0ed, plusNumberToSearch = None, searchPropertyString = [], bonusNumberToSearch = None, percentageNumberToSearch = None, pauseInMS = 500)\r\n\r\n#Argument 1 myTrashBag   : Serial ID of your trash bag, use Object Inspector to get this.\r\n#Argument 2 emptyTrashBag: Default is False, but set to True if you want to empty your trash bag everytime to make call to the Empty_TrashBag function.\r\n#Empty_TrashBag(myTrashBag = 0x41e0a0ed, emptyTrashBag = False)",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": null,
+        "Aliases": []
+      },
+      {
+        "Name": "TestRecord",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "\r\nSetAlias(\"testAlias\", 0x1374)\r\n\r\nCreateList(\"testing\")\r\n#hex\r\nPushList(\"testing\", 0x1374)\r\n#word\r\nPushList(\"testing\", \"different\")\r\n#ensure nothing wierd with alias\r\nPushList(\"testing\", \"testAlias\")\r\n#WierdThings\r\nPushList(\"testing\", Cast)\r\n\r\nlist = GetList(\"testing\")\r\n\r\n\r\n#UseType(list[0])\r\n#Msg(list[1])\r\n#UseType(list[2])\r\nlist[3](\"Wither\")\r\n",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": null,
+        "Aliases": []
+      },
+      {
+        "Name": "Unlock,Disarm,Loot",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "from Assistant import Engine\r\n\r\nsuccessResponse = \"The lock quickly yields to your skill\"\r\nsuccess = \"You successfully render the trap harmless\"\r\n\r\nPromptAlias(\"Treasure Chest\")\r\n\r\nwhile not InJournal(successResponse):\r\n\tUseType(0x14fc)\r\n\tWaitForTarget(5000)\r\n\tTarget(\"Treasure Chest\")\r\n\tPause(4000)\r\nClearJournal()\r\nwhile not InJournal(success):\r\n\tUseSkill(\"Remove Trap\")\r\n\tWaitForTarget(5000)\r\n\tTarget(\"Treasure Chest\")\r\n\tPause(10000)\r\nClearJournal()\r\n\r\n",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": null,
+        "Aliases": []
+      },
+      {
+        "Name": "grab",
+        "Loop": false,
+        "DoNotAutoInterrupt": false,
+        "Macro": "Msg(\"[grab\")",
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 47,
+          "SDLModifier": 1,
+          "Mouse": 7
+        },
+        "IsBackground": false,
+        "IsAutostart": false,
+        "Disableable": true,
+        "Group": null,
+        "Aliases": []
+      }
+    ],
+    "Alias": [
+      {
+        "Name": "bank",
+        "Value": 1087354333
+      },
+      {
+        "Name": "last",
+        "Value": 1078816659
+      },
+      {
+        "Name": "backpack",
+        "Value": 1087263989
+      },
+      {
+        "Name": "self",
+        "Value": 541003
+      },
+      {
+        "Name": "test",
+        "Value": 536741
+      },
+      {
+        "Name": "enemy",
+        "Value": 1117680
+      },
+      {
+        "Name": "home book",
+        "Value": 1078816659
+      },
+      {
+        "Name": "treasure chest",
+        "Value": 0
+      },
+      {
+        "Name": "salvage bag",
+        "Value": 1149223161
+      },
+      {
+        "Name": "complete bag",
+        "Value": 1166952869
+      },
+      {
+        "Name": "testalias",
+        "Value": 4980
+      }
+    ]
+  },
+  "Skills": [],
+  "Organizer": [
+    {
+      "Name": "Organizer-1",
+      "Stack": true,
+      "SourceContainer": 0,
+      "DestinationContainer": 0,
+      "Keys": {
+        "Keys": 0,
+        "SDLModifier": 0,
+        "Mouse": 7
+      },
+      "Complete": false,
+      "Items": []
+    }
+  ],
+  "Dress": {
+    "Options": {
+      "MoveConflictingItems": true,
+      "UseUO3DPackets": false
+    },
+    "Entries": [
+      {
+        "Name": "Current",
+        "UndressContainer": 0,
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "Items": [
+          {
+            "Layer": 3,
+            "Serial": 1102368343,
+            "ID": 5905,
+            "Type": 0
+          },
+          {
+            "Layer": 4,
+            "Serial": 1104033712,
+            "ID": 5202,
+            "Type": 0
+          },
+          {
+            "Layer": 6,
+            "Serial": 1078772214,
+            "ID": 7609,
+            "Type": 0
+          },
+          {
+            "Layer": 7,
+            "Serial": 1078913688,
+            "ID": 5140,
+            "Type": 0
+          },
+          {
+            "Layer": 8,
+            "Serial": 1118638405,
+            "ID": 7945,
+            "Type": 0
+          },
+          {
+            "Layer": 9,
+            "Serial": 1105538081,
+            "ID": 12122,
+            "Type": 0
+          },
+          {
+            "Layer": 10,
+            "Serial": 1094275206,
+            "ID": 10106,
+            "Type": 0
+          },
+          {
+            "Layer": 12,
+            "Serial": 1086299757,
+            "ID": 11112,
+            "Type": 0
+          },
+          {
+            "Layer": 13,
+            "Serial": 1135302079,
+            "ID": 5141,
+            "Type": 0
+          },
+          {
+            "Layer": 14,
+            "Serial": 1103668839,
+            "ID": 4230,
+            "Type": 0
+          },
+          {
+            "Layer": 18,
+            "Serial": 1084142665,
+            "ID": 4231,
+            "Type": 0
+          },
+          {
+            "Layer": 19,
+            "Serial": 1084086712,
+            "ID": 5084,
+            "Type": 0
+          },
+          {
+            "Layer": 20,
+            "Serial": 1149177230,
+            "ID": 5397,
+            "Type": 0
+          },
+          {
+            "Layer": 22,
+            "Serial": 1078715763,
+            "ID": 9859,
+            "Type": 0
+          }
+        ]
+      },
+      {
+        "Name": "Magery",
+        "UndressContainer": 1159607588,
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "Items": [
+          {
+            "Layer": 2,
+            "Serial": 1169415653,
+            "ID": 5112,
+            "Type": 0
+          },
+          {
+            "Layer": 6,
+            "Serial": 1118295589,
+            "ID": 5912,
+            "Type": 0
+          },
+          {
+            "Layer": 10,
+            "Serial": 1109987726,
+            "ID": 5139,
+            "Type": 0
+          },
+          {
+            "Layer": 12,
+            "Serial": 1078891922,
+            "ID": 5435,
+            "Type": 0
+          },
+          {
+            "Layer": 18,
+            "Serial": 1083288503,
+            "ID": 4231,
+            "Type": 0
+          }
+        ]
+      },
+      {
+        "Name": "Luck",
+        "UndressContainer": 1105183793,
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "Items": [
+          {
+            "Layer": 2,
+            "Serial": 1169415653,
+            "ID": 5112,
+            "Type": 0
+          },
+          {
+            "Layer": 3,
+            "Serial": 1102368343,
+            "ID": 5905,
+            "Type": 0
+          },
+          {
+            "Layer": 4,
+            "Serial": 1104033712,
+            "ID": 5202,
+            "Type": 0
+          },
+          {
+            "Layer": 6,
+            "Serial": 1078772214,
+            "ID": 7609,
+            "Type": 0
+          },
+          {
+            "Layer": 7,
+            "Serial": 1078913688,
+            "ID": 5140,
+            "Type": 0
+          },
+          {
+            "Layer": 8,
+            "Serial": 1118638405,
+            "ID": 7945,
+            "Type": 0
+          },
+          {
+            "Layer": 9,
+            "Serial": 1105538081,
+            "ID": 12122,
+            "Type": 0
+          },
+          {
+            "Layer": 10,
+            "Serial": 1094275206,
+            "ID": 10106,
+            "Type": 0
+          },
+          {
+            "Layer": 12,
+            "Serial": 1086299757,
+            "ID": 11112,
+            "Type": 0
+          },
+          {
+            "Layer": 13,
+            "Serial": 1135302079,
+            "ID": 5141,
+            "Type": 0
+          },
+          {
+            "Layer": 14,
+            "Serial": 1103668839,
+            "ID": 4230,
+            "Type": 0
+          },
+          {
+            "Layer": 18,
+            "Serial": 1084142665,
+            "ID": 4231,
+            "Type": 0
+          },
+          {
+            "Layer": 19,
+            "Serial": 1084086712,
+            "ID": 5084,
+            "Type": 0
+          },
+          {
+            "Layer": 20,
+            "Serial": 1149177230,
+            "ID": 5397,
+            "Type": 0
+          },
+          {
+            "Layer": 22,
+            "Serial": 1078715763,
+            "ID": 9859,
+            "Type": 0
+          }
+        ]
+      },
+      {
+        "Name": "Melee",
+        "UndressContainer": 1092177469,
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "Items": [
+          {
+            "Layer": 2,
+            "Serial": 1083449427,
+            "ID": 3915,
+            "Type": 0
+          },
+          {
+            "Layer": 3,
+            "Serial": 1102368343,
+            "ID": 5905,
+            "Type": 0
+          },
+          {
+            "Layer": 4,
+            "Serial": 1104033712,
+            "ID": 5202,
+            "Type": 0
+          },
+          {
+            "Layer": 6,
+            "Serial": 1249835480,
+            "ID": 5051,
+            "Type": 0
+          },
+          {
+            "Layer": 7,
+            "Serial": 1078913688,
+            "ID": 5140,
+            "Type": 0
+          },
+          {
+            "Layer": 8,
+            "Serial": 1118638405,
+            "ID": 7945,
+            "Type": 0
+          },
+          {
+            "Layer": 9,
+            "Serial": 1105538081,
+            "ID": 12122,
+            "Type": 0
+          },
+          {
+            "Layer": 10,
+            "Serial": 1080515788,
+            "ID": 5078,
+            "Type": 0
+          },
+          {
+            "Layer": 12,
+            "Serial": 1086299757,
+            "ID": 11112,
+            "Type": 0
+          },
+          {
+            "Layer": 13,
+            "Serial": 1111935684,
+            "ID": 9793,
+            "Type": 0
+          },
+          {
+            "Layer": 14,
+            "Serial": 1080099019,
+            "ID": 4230,
+            "Type": 0
+          },
+          {
+            "Layer": 18,
+            "Serial": 1084142665,
+            "ID": 4231,
+            "Type": 0
+          },
+          {
+            "Layer": 19,
+            "Serial": 1084086712,
+            "ID": 5084,
+            "Type": 0
+          },
+          {
+            "Layer": 20,
+            "Serial": 1149177230,
+            "ID": 5397,
+            "Type": 0
+          },
+          {
+            "Layer": 22,
+            "Serial": 1078715763,
+            "ID": 9859,
+            "Type": 0
+          }
+        ]
+      },
+      {
+        "Name": "Necro",
+        "UndressContainer": 1413019035,
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "Items": [
+          {
+            "Layer": 2,
+            "Serial": 1151950967,
+            "ID": 5112,
+            "Type": 0
+          },
+          {
+            "Layer": 3,
+            "Serial": 1102368343,
+            "ID": 5905,
+            "Type": 0
+          },
+          {
+            "Layer": 4,
+            "Serial": 1141060384,
+            "ID": 5202,
+            "Type": 0
+          },
+          {
+            "Layer": 9,
+            "Serial": 1105538081,
+            "ID": 12122,
+            "Type": 0
+          },
+          {
+            "Layer": 12,
+            "Serial": 1078891922,
+            "ID": 5435,
+            "Type": 0
+          },
+          {
+            "Layer": 13,
+            "Serial": 1086227893,
+            "ID": 5068,
+            "Type": 0
+          },
+          {
+            "Layer": 14,
+            "Serial": 1208185187,
+            "ID": 4230,
+            "Type": 0
+          },
+          {
+            "Layer": 20,
+            "Serial": 1149177230,
+            "ID": 5397,
+            "Type": 0
+          },
+          {
+            "Layer": 22,
+            "Serial": 1078715763,
+            "ID": 9859,
+            "Type": 0
+          }
+        ]
+      },
+      {
+        "Name": "Archer",
+        "UndressContainer": 0,
+        "PassToUO": true,
+        "Keys": {
+          "Keys": 0,
+          "SDLModifier": 0,
+          "Mouse": 7
+        },
+        "Items": []
+      }
+    ]
+  },
+  "Counters": {
+    "Warn": true,
+    "WarnAmount": 100,
+    "Items": [
+      {
+        "Name": "clean bandage%s%",
+        "Graphic": 3617,
+        "Color": 0
+      }
+    ]
+  },
+  "Friends": {
+    "IncludePartyMembersInFriends": false,
+    "PreventAttackingFriendsInWarMode": false,
+    "PreventTargetingFriendsWithHarmful": false,
+    "Items": []
+  },
+  "VendorBuy": {
+    "AutoDisableOnLogin": false,
+    "Entries": []
+  },
+  "VendorSell": {
+    "Items": [
+      {
+        "Enabled": true,
+        "Graphic": 3856,
+        "Hue": 0,
+        "Amount": -1,
+        "MinPrice": 0,
+        "Name": "emerald%s%"
+      },
+      {
+        "Enabled": true,
+        "Graphic": 3878,
+        "Hue": 0,
+        "Amount": -1,
+        "MinPrice": 0,
+        "Name": "diamond%s%"
+      },
+      {
+        "Enabled": true,
+        "Graphic": 3865,
+        "Hue": 0,
+        "Amount": -1,
+        "MinPrice": 0,
+        "Name": "sapphire%s%"
+      },
+      {
+        "Enabled": true,
+        "Graphic": 3885,
+        "Hue": 0,
+        "Amount": -1,
+        "MinPrice": 0,
+        "Name": "tourmaline%s%"
+      },
+      {
+        "Enabled": true,
+        "Graphic": 3859,
+        "Hue": 0,
+        "Amount": -1,
+        "MinPrice": 0,
+        "Name": "rub%ies/y%"
+      },
+      {
+        "Enabled": true,
+        "Graphic": 3862,
+        "Hue": 0,
+        "Amount": -1,
+        "MinPrice": 0,
+        "Name": "amethyst%s%"
+      },
+      {
+        "Enabled": true,
+        "Graphic": 3873,
+        "Hue": 0,
+        "Amount": -1,
+        "MinPrice": 0,
+        "Name": "star sapphire%s%"
+      },
+      {
+        "Enabled": true,
+        "Graphic": 3861,
+        "Hue": 0,
+        "Amount": -1,
+        "MinPrice": 0,
+        "Name": "citrine%s%"
+      },
+      {
+        "Enabled": true,
+        "Graphic": 3877,
+        "Hue": 0,
+        "Amount": -1,
+        "MinPrice": 0,
+        "Name": "piece%s% of amber"
+      }
+    ]
+  },
+  "Scavenger": {
+    "Enabled": false,
+    "Container": 1087263992,
+    "CheckWeight": false,
+    "MinWeightAvailable": 0,
+    "Items": []
+  },
+  "Autoloot": {
+    "Enabled": true,
+    "DisableInGuardzone": false,
+    "Container": 1087263992,
+    "RequeueFailedItems": true,
+    "LootHumanoids": false,
+    "LeftColumnWidth": 200.0,
+    "Groups": [],
+    "Items": [
+      {
+        "Name": "Any",
+        "ID": -1,
+        "Autoloot": true,
+        "Rehue": false,
+        "RehueHue": 1153,
+        "Enabled": false,
+        "Priority": "Normal",
+        "Group": null,
+        "Properties": [
+          {
+            "Name": "~1_skillname~ +~2_val~",
+            "Operator": "Equal",
+            "Value": 0
+          },
+          {
+            "Name": "bracelet",
+            "Operator": "Equal",
+            "Value": 0
+          }
+        ]
+      }
+    ]
+  }
+}

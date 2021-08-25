@@ -1,142 +1,132 @@
-import common
-import types
-import gumpNavigation
-from ClassicAssist.Data.Macros.Commands.GumpCommands import *
-from ClassicAssist.Data.Macros.Commands.ObjectCommands import *
-from ClassicAssist.Data.Macros.Commands.MainCommands import *
+import item_types
+import crafting
+import gumps
+class BlacksmithCrafting:
+    blacksmith_gump = 0x38920abd
+    no_Metal = "you do not have sufficient metal to make that"
+    exceptional = "you create an exceptional quality item"
+    created = "you create the item"
 
-noMetal = "you do not have sufficient metal to make that"
-exceptional = "you create an exceptional quality item"
-created = "you create the item"
+    craft_responses = {
+        1: created,
+        2: exceptional,
+        3: no_Metal
+    }
+    blacksmith_category_dict = {
+        "ringmail": 1,
+        "chainmail": 8,
+        "platemail": 15,
+        "helmets": 22,
+        "shields": 29,
+        "throwing": 36,
+        "bladed": 43,
+        "axes": 50,
+        "polearms": 57,
+        "bashing": 64,
+        "dragon scale armor": 71,
+        "metal type": 7,
+        "make last": 21
+    }
+    ringmail_dict = {}
+    chainmail_dict = {
+        "chainmail coif": 2,
+        "chainmail leggings": 9,
+        "chainmail tunic": 16
+    }
+    platemail_dict = {}
+    helmet_dict = {
+        "bascinet": 2,
+        "close helmet": 9,
+        "helmet": 16,
+        "norse helm": 23,
+        "plate helm": 30
+    }
+    shield_dict = {
+        "metal shield": 23
+    }
+    throwing_dict = {}
+    blade_dict = {
+        "cutlass": 23,
+        "dagger": 30,
+        "katana": 37,
+        "kryss": 44
+    }
+    axe_dict = {}
+    polearms_dict = {
+        "halbred": 23,
+        "war fork": 65
+    }
+    bashing_dict = {
+        "hammer pick": 2,
+        "mace": 9,
+        "maul": 16,
+        "scepter": 23,
+        "war mace": 30
+    }
+    dragon_dict = {}
+    metal_type_dict = {
+        "iron": 6,
+        "dull copper": 13,
+        "shadow iron": 20,
+        "copper": 27,
+        "bronze": 34,
+        "gold": 41,
+        "agapite": 48,
+        "verite": 55,
+        "valorite": 62,
+        "blaze": 69,
+        "ice": 76,
+        "toxic": 83,
+        "electrum": 90,
+        "platinum": 97,
+        "red scales": 0,
+        "yellow scales": 0,
+        "black scales": 0,
+        "green scales": 0,
+        "white scales": 0,
+        "blue scales": 0,
+        "copper scales": 0,
+        "silver scales": 0,
+        "gold scales": 0
+    }
 
-blacksmithGump = 0x38920abd	
+    def __init__(self):
+        factory = gumps.GumpResponseMapFactory()
+        # make category Map
+        blacksmith_map = factory.create_map(self.blacksmith_category_dict)
+        # metal type map
+        blacksmith_map.update(factory.create_map(
+            self.metal_type_dict, "metal type"))
+        # add the rest of the maps
+        blacksmith_map.update(factory.create_map(self.ringmail_dict, "ringmail"))
+        blacksmith_map.update(factory.create_map(
+            self.chainmail_dict, "chainmail"))
+        blacksmith_map.update(factory.create_map(
+            self.platemail_dict, "platemail"))
+        blacksmith_map.update(factory.create_map(self.helmet_dict, "helmets"))
+        blacksmith_map.update(factory.create_map(self.shield_dict, "shields"))
+        blacksmith_map.update(factory.create_map(self.throwing_dict, "throwing"))
+        blacksmith_map.update(factory.create_map(self.blade_dict, "bladed"))
+        blacksmith_map.update(factory.create_map(self.axe_dict, "axes"))
+        blacksmith_map.update(factory.create_map(self.polearms_dict, "polearms"))
+        blacksmith_map.update(factory.create_map(self.bashing_dict, "bashing"))
+        blacksmith_map.update(factory.create_map(
+            self.dragon_dict, "dragon scale armor"))
+        self._Crafting = crafting.Crafting("blacksmith", self.blacksmith_gump,
+                                  item_types.SMITH_HAMMER, self.craft_responses, blacksmith_map)
 
-craftRespones = {
-	1: created,
-	2: exceptional,
-	3: noMetal
-}
+    def _get_craft_results(self):
+        return self._Crafting.craft_result()
 
-blacksmithCategoryGumpSelectionMap = {
-	"ringmail": 1,
-	"chainmail": 8,
-	"platemail": 15,
-	"helmet": 22,
-	"shield": 29,
-	"throwing": 36,
-	"bladed": 43,
-	"axes": 50,
-	"polearms": 57,
-	"bashing": 64,
-	"dragon": 71
-}
+    def create_last_item(self):
+        self._Crafting.use_tool()
+        self._Crafting.select_option("make last")
+        return self._get_craft_results()
 
-poleArmsMap = {
-	"halbred": 23,
-	"war fork": 65
-}
-
-shieldMap = {
-	"metal shield": 23
-}
-
-bladeMap = {
-	"cutlass": 23,
-	"dagger": 30,
-	"katana": 37,
-	"kryss": 44
-}
-
-bashingMap = {
-	"hammer pick": 2,
-	"mace": 9,
-	"maul": 16,
-	"scepter": 23,
-	"war mace": 30
-}
-
-chainmailMap = {
-	"chainmail coif": 2,
-	"chainmail leggings": 9,
-	"chainmail tunic": 16
-}
-
-helmetMap = {
-	"bascinet": 2,
-	"close helmet": 9,
-	"helmet": 16,
-	"norse helm": 23,
-	"plate helm": 30 
-}
-	
-blacksmithItemTypeMap = {
-	"polearms": poleArmsMap,
-	"shield": shieldMap,
-	"bladed": bladeMap,
-	"bashing": bashingMap,
-	"chainmail": chainmailMap,
-	"helmet": helmetMap
-}
-
-def getCategory(item):
-	for key, value in blacksmithItemTypeMap.items():
-		if item in value:
-			return key
-
-metalTypeResponseMap = {
-		"iron": 6,
-		"dull copper": 13,
-		"shadow iron": 20,
-		"copper": 27,
-		"bronze": 34,
-		"gold": 41,
-		"agapite": 48,
-		"verite": 55,
-		"valorite": 62,
-		"blaze": 69,
-		"ice": 76,
-		"toxic": 83,
-		"electrum": 90,
-		"platinum": 97,
-		"red scales": 0,
-		"yellow scales": 0,
-		"black scales": 0,
-		"green scales": 0,
-		"white scales": 0,
-		"blue scales": 0,
-		"copper scales": 0,
-		"silver scales": 0,
-		"gold scales": 0
-	}
-
-def blacksmithGumpResponse(response):
-	common.gumpResponse(blacksmithGump, response)
-
-def setMetalType(metalType):
-	blacksmithGumpResponse(7)
-	metalResponse = metalTypeResponseMap.get(metalType)
-	blacksmithGumpResponse(metalResponse)
-
-def useTool():
-	UseType(types.smithHammer)
-	WaitForGump(blacksmithGump, 5000)
-	Pause(1000)
-
-def getCraftResults():
-	for key, value in craftRespones.items():
-		if InGump(blacksmithGump, value):
-			return key
-
-def createLastItem():
-	useTool()
-	blacksmithGumpResponse(21)
-
-def createItem(item, metalType):
-	category = getCategory(item)
-	categoryResponse = blacksmithCategoryGumpSelectionMap.get(category)
-	useTool()
-	setMetalType(metalType)
-	blacksmithGumpResponse(categoryResponse)
-	itemList = blacksmithItemTypeMap.get(category)
-	itemResponse = itemList.get(item)
-	blacksmithGumpResponse(itemResponse)
+    def create_item(self, item, metal_type):
+        self._Crafting.use_tool()
+        # set metal type
+        self._Crafting.select_option(metal_type)
+        # make item
+        self._Crafting.select_option(item)
+        return self._get_craft_results()

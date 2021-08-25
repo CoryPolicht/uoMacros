@@ -1,4 +1,5 @@
 {
     "python.defaultInterpreterPath": "C:\\Program Files\\IronPython 2.7\\ipy.exe",
-    "python.languageServer": "Pylance"
+    "python.languageServer": "Pylance",
+    "python.analysis.typeCheckingMode": "basic"
 }
