@@ -27,6 +27,7 @@ class ItemSorting:
         return self._create_key_pair(property_message, default)
 
     def _get_property_and_value_from_message(self, property_message):
+        # type: (str) -> list[str]
         split_message = property_message.split("=")
         return split_message
 
@@ -72,8 +73,12 @@ class ItemSorting:
     def move_all(self):
         # type: () -> None
         source, destination = self._set_source_destination()
-        items_to_trash = wrapper.get_all_items_from_cont(source)
-        for item in items_to_trash:
+        self._move_all(source, destination)
+        
+    def _move_all(self, source, destination):
+        # type: (int, int) -> None
+        items_to_move = wrapper.get_all_items_from_cont(source)
+        for item in items_to_move:
             wrapper.move_item(item, destination)
             wrapper.pause(1000)
 

@@ -12,7 +12,6 @@ class GumpResponseMapFactory:
                 new_map[k] = GumpResponseMap(k, v)
         return new_map
 
-
 class GumpResponseMap:
     def __init__(self, name, response, parent_map_name = None):
         # type: (str, int, str) -> None
@@ -29,9 +28,9 @@ class GumpResponseMap:
             return self.name == other.name
         return False
 
-
 class GumpNavigation:
     def __init__(self, gump_id, gump_map):
+        # type: (int, dict[str, GumpResponseMap]) -> None
         self._gump_id = gump_id
         self._gump_map = gump_map
 
@@ -42,10 +41,12 @@ class GumpNavigation:
     # recursive so I don't need to iterate over whole list
     # make sure useTool is called before this
     def navigate_gump(self, item_name):
+        # type: (str) -> None
         if self._gump_map[item_name].parent_map_name:
             parent_response = self._gump_map[item_name].parent_map_name
+            # ignore this error, if statement resolves this
             self.navigate_gump(parent_response)
-        response = self._gump_map[item_name].parent_map_name
+        response = self._gump_map[item_name].Response
         self.gump_response(response)
 
     def get_element_text_by_xy(self, x_cords, y_cords):

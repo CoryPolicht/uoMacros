@@ -1,15 +1,15 @@
 import item_types
 import crafting
 import gumps
-class BlacksmithCrafting:
-    blacksmith_gump = 0x38920abd
+import common
+
+
+class BlacksmithCrafting(crafting.Crafting):
     no_Metal = "you do not have sufficient metal to make that"
-    exceptional = "you create an exceptional quality item"
-    created = "you create the item"
 
     craft_responses = {
-        1: created,
-        2: exceptional,
+        1: common.created,
+        2: common.exceptional,
         3: no_Metal
     }
     blacksmith_category_dict = {
@@ -98,35 +98,22 @@ class BlacksmithCrafting:
         blacksmith_map.update(factory.create_map(
             self.metal_type_dict, "metal type"))
         # add the rest of the maps
-        blacksmith_map.update(factory.create_map(self.ringmail_dict, "ringmail"))
+        blacksmith_map.update(factory.create_map(
+            self.ringmail_dict, "ringmail"))
         blacksmith_map.update(factory.create_map(
             self.chainmail_dict, "chainmail"))
         blacksmith_map.update(factory.create_map(
             self.platemail_dict, "platemail"))
         blacksmith_map.update(factory.create_map(self.helmet_dict, "helmets"))
         blacksmith_map.update(factory.create_map(self.shield_dict, "shields"))
-        blacksmith_map.update(factory.create_map(self.throwing_dict, "throwing"))
+        blacksmith_map.update(factory.create_map(
+            self.throwing_dict, "throwing"))
         blacksmith_map.update(factory.create_map(self.blade_dict, "bladed"))
         blacksmith_map.update(factory.create_map(self.axe_dict, "axes"))
-        blacksmith_map.update(factory.create_map(self.polearms_dict, "polearms"))
+        blacksmith_map.update(factory.create_map(
+            self.polearms_dict, "polearms"))
         blacksmith_map.update(factory.create_map(self.bashing_dict, "bashing"))
         blacksmith_map.update(factory.create_map(
             self.dragon_dict, "dragon scale armor"))
-        self._Crafting = crafting.Crafting("blacksmith", self.blacksmith_gump,
-                                  item_types.SMITH_HAMMER, self.craft_responses, blacksmith_map)
-
-    def _get_craft_results(self):
-        return self._Crafting.craft_result()
-
-    def create_last_item(self):
-        self._Crafting.use_tool()
-        self._Crafting.select_option("make last")
-        return self._get_craft_results()
-
-    def create_item(self, item, metal_type):
-        self._Crafting.use_tool()
-        # set metal type
-        self._Crafting.select_option(metal_type)
-        # make item
-        self._Crafting.select_option(item)
-        return self._get_craft_results()
+        super().__init__("blacksmith",
+                         item_types.SMITH_HAMMER, self.craft_responses, blacksmith_map)

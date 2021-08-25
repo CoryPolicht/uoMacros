@@ -1,5 +1,8 @@
 from wrapper import *
 
+exceptional = "you create an exceptional quality item"
+created = "you create the item"
+
 def checkOrMakeAlias(aliasName):
 	if not find_alias(aliasName):
 		prompt_alias(aliasName)
