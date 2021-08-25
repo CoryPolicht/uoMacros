@@ -44,7 +44,7 @@ class GumpNavigation:
         # type: (str) -> None
         if self._gump_map[item_name].parent_map_name:
             parent_response = self._gump_map[item_name].parent_map_name
-            # ignore this error, if statement resolves this
+            # ignore this error, if statement prevents a None value
             self.navigate_gump(parent_response)
         response = self._gump_map[item_name].Response
         self.gump_response(response)
@@ -57,4 +57,5 @@ class GumpNavigation:
 
     # takes only dictionary object returns any matching items
     def check_in_gump(self, value):
+        # type: (str) -> bool
         return wrapper.in_gump(self._gump_id, value)

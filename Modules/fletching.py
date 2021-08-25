@@ -16,8 +16,7 @@ class Fletching(crafting.Crafting):
         "" : 1
     }
 
-    fletching_category_dict = {}
-
     def __init__(self):
         factory = gumps.GumpResponseMapFactory()
         fletching_map = factory.create_map(self.fletching_category_dict)
+        fletching_map.update(factory.create_map())
