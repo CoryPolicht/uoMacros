@@ -119,3 +119,6 @@ def get_all_items_from_cont(container_id):
 def message_prompt(gump_text, initial_text):
     # type: (str, str) -> Tuple[bool, str]
     return MessagePrompt(gump_text, initial_text)
+
+def selection_prompt(options):
+    return SelectionPrompt(options)

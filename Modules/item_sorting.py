@@ -28,8 +28,7 @@ class ItemSorting:
 
     def _get_property_and_value_from_message(self, property_message):
         # type: (str) -> list[str]
-        split_message = property_message.split("=")
-        return split_message
+        return property_message.split("=")
 
     def _parse_raw_property_list(self, raw_property_response):
         # type: (str) -> list[str]
@@ -58,7 +57,10 @@ class ItemSorting:
     def check_property_value(self, item_id, property_name, property_value_to_match):
         # type: (int, str, str) -> bool
         property_value_str = wrapper.property_value(item_id, property_name)
-        return int(property_value_str) >= int(property_value_to_match)
+        try:
+            return int(property_value_str) >= int(property_value_to_match)
+        except ValueError:
+            return property_value_str == property_value_to_match
 
     def check_all_properties(self, item_id, property_dict):
         # type: (int, dict[str, str]) -> bool
